@@ -1,8 +1,9 @@
 import { useState } from "react";
-import {z} from "zod";
+import {any, z} from "zod";
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import api from "../services/api";
+import { useNavigate } from "react-router-dom";
 
 const loginSchema = z.object({
     email: z.string().email ('Email inválido'),
@@ -19,14 +20,28 @@ const registerSchema = z.object({
 
 function AuthPage(){
     
+    const navigate = useNavigate()
+
     const onSubmit = async (data: any) => {
         const response = await api.post('/auth/login', data)
         localStorage.setItem('token', response.data.token)
+        navigate('/feed')
+        console.log(response.data)
+    }
+
+    const onRegister = async (data: any) => {
+        const response = await api.post('/auth/register', data)
+        localStorage.setItem('token',response.data.token)
+        navigate('/feed')
         console.log(response.data)
     }
 
     const { register, handleSubmit, formState: { errors } } = useForm({
         resolver: zodResolver(loginSchema)
+    })
+
+    const { register:registerField, handleSubmit: handleRegister, formState: { errors:registerErrors} } = useForm({
+        resolver: zodResolver(registerSchema)
     })
 
     const [abaAtiva, setAbaAtiva] = useState('login')
@@ -37,17 +52,18 @@ function AuthPage(){
                 <h1>Mini twitter</h1>
                 <button onClick={()=> setAbaAtiva('login')}>Login</button>
                 <button onClick={() => setAbaAtiva('cadastrar')}>Cadastrar</button>
+                
                 {abaAtiva === 'login' ? (
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <input {...register('email')} type="email" placeholder="Digite seu email"/>
                         <input {...register('password')} type="password" placeholder="DIgite sua senha"/>
-                        <button type="submit" >Entrar</button>
+                        <button type="submit" >Entrar </button>
                     </form>
-                ) : <form>
-                        <input type="text" placeholder="Digite Seu nome"/>
-                        <input type="email" placeholder="Digite seu email"/>
-                        <input type="password" placeholder="Digite sua senha"/>
-                        <button> Cadastrar</button>
+                ) : <form onSubmit={handleRegister(onRegister)}>
+                        <input {...registerField('name')} type="text" placeholder="Digite Seu nome"/>
+                        <input {...registerField('email')} type="email" placeholder="Digite seu email"/>
+                        <input {...registerField('password')} type="password" placeholder="Digite sua senha"/>
+                        <button type="submit"> Cadastrar </button>
                     </form>
                 }
             </div>
