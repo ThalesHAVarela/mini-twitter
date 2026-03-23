@@ -60,21 +60,19 @@ function FeedPage(){
 
     const [editing, setEditing] = useState(false)
 
-    
-
 
     return (
         
         <div className="min-h-screen bg-gray-900 flex flex-col items-center justify-center">
-            <header className="text-white w-full p-5 flex">
+            <header className=" bg-gray-900 text-white w-full p-5 flex items-center justify-between border-b border-gray-700">
                 <div className=""><h2>Mini Twitter</h2></div>
-                <div><input type="text" placeholder="Buscar um post..." value={search} onChange={(e) => setSearch(e.target.value)}></input></div>
+                <div><input type="text" placeholder="Buscar um post..." value={search} onChange={(e) => setSearch(e.target.value)} className="bg-gray-800 text-white rounded-full px-4 py-2 w-96 border border-gray-600"></input></div>
                 <div><button className=" bg-blue-500 text-white rounded-lg p-3 mt-2" onClick={logout}>Sair</button></div>
             </header>
-            <form className=" flex flex-col bg-gray-800 mb-8 p-8" onSubmit={handleSubmit(onSubmitPost)}>
-                <input {...register('title')} type="text" placeholder="Título" />
-                <textarea {...register('content')} placeholder="O que está rolando?" />
-                <input {...register('image')} type="text" placeholder="URL da imagem (opcional)" />
+            <form className="text-white bg-gray-800 p-8 rounded-lg w-96 flex flex-col mb-5 mt-5" onSubmit={handleSubmit(onSubmitPost)}>
+                <input {...register('title')} type="text" placeholder="Título" className="bg-gray-700 text-white rounded-lg p-2 mb-2 w-full border border-gray-600 placeholder-gray-400"/>
+                <textarea {...register('content')} placeholder="O que está rolando?" className="bg-gray-700 text-white rounded-lg p-2 mb-2 w-full border border-gray-600 placeholder-gray-400"/>
+                <input {...register('image')} type="text" placeholder="URL da imagem (opcional)" className="bg-gray-700 text-white rounded-lg p-2 mb-2 w-full border border-gray-600 placeholder-gray-400"/>
                 <button type="submit">Postar</button>
             </form>
             <div>{isLoading ? <p>Carregando...</p> : (data.posts.map((post:any) => (
@@ -97,10 +95,15 @@ function FeedPage(){
                 ))
                 )} 
             </div>
-            <div>
-                <button onClick={() => setPage(page - 1)} >Anterior</button>
-                <span>{page}</span>
-                <button onClick={() => setPage(page + 1)} >Próximo</button>
+            <div className="flex items-center gap-4 mt-6 mb-6">
+                <button 
+                    className="bg-gray-800 text-white rounded-lg px-4 py-2 hover:bg-gray-700 disabled:opacity-50"
+                    onClick={() => setPage(page - 1)}
+                    disabled={page === 1}>Anterior</button>
+                <span className="text-white font-bold">{page}</span>
+                <button 
+                    className="bg-gray-800 text-white rounded-lg px-4 py-2 hover:bg-gray-700"
+                    onClick={() => setPage(page + 1)}>Próximo</button>
             </div>
             <footer className="text-white w-full p-5 flex">
                 <div><h2>Mini Twitter</h2></div>
